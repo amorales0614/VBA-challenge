@@ -1,0 +1,72 @@
+Sub tickercounter():
+
+    Dim lastRow As Long
+    
+    lastRow = Cells(Rows.Count, 1).End(xlUp).Row
+    
+    Cells(1, "I").Value = "Ticker"
+    Cells(1, "J").Value = "Yearly Change"
+    Cells(1, "K").Value = "Percent Change"
+    Cells(1, "L").Value = "Total Stock Volume"
+    
+    Dim TickerName As String
+    Dim YearlyChange As Double
+    Dim OpenPrice As Double
+    Dim ClosePrice As Double
+    Dim PercentChange As Double
+    Dim Volume As Double
+    Volume = 0
+    Dim rowCounter As Double
+    rowCounter = 2
+    Dim colCounter As Integer
+    colCounter = 1
+    Dim i As Long
+    
+    OpenPrice = Cells(2, 3).Value
+        
+    For i = 2 To lastRow
+        
+        If Cells(i, colCounter).Value <> Cells(i + 1, colCounter).Value Then
+        
+        TickerName = Cells(i, colCounter).Value
+        Cells(rowCounter, colCounter + 8).Value = TickerName
+        
+        ClosePrice = Cells(i, colCounter + 5).Value
+        
+        YearlyChange = ClosePrice - OpenPrice
+        Cells(rowCounter, colCounter + 9).Value = YearlyChange
+                    
+            If (OpenPrice = 0 And ClosePrice = 0) Then
+            PercentChange = 0
+            ElseIf (OpenPrice = 0 And ClosePrice <> 0) Then
+            PercentChange = 1
+            Else
+            PercentChange = (YearlyChange / OpenPrice) * 100
+            Cells(rowCounter, colCounter + 10).Value = PercentChange
+            End If
+                    
+        Volume = Volume + Cells(i, colCounter + 6).Value
+        Cells(rowCounter, colCounter + 11).Value = Volume
+        
+        rowCounter = rowCounter + 1
+        OpenPrice = Cells(i + 1, colCounter + 2)
+        Volume = 0
+        
+        End If
+    
+    Next i
+    
+    For x = 2 To lastRow
+    
+        If (Cells(x, colCounter + 9).Value > 0 Or Cells(x, colCounter + 9).Value = 0) Then
+            Cells(x, colCounter + 9).Interior.ColorIndex = 4
+
+            ElseIf Cells(x, colCounter + 9).Value < 0 Then
+            Cells(x, colCounter + 9).Interior.ColorIndex = 3
+
+        End If
+        
+    Next x
+    
+End Sub
+
